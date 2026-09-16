@@ -1,0 +1,55 @@
+{
+  "suite": "classify-smoke",
+  "prompt_file": "../prompts/classify_v1.txt",
+  "prompt_hash": "29c99b17b004",
+  "runs": 1,
+  "model": {
+    "temperature": 0.0,
+    "max_tokens": 256
+  },
+  "totals": {
+    "cases": 1,
+    "passed": 1,
+    "failed": 0,
+    "flaky": 0,
+    "tokens_in": 27,
+    "tokens_out": 6,
+    "wall_ms": 315
+  },
+  "cases": [
+    {
+      "id": "c001",
+      "status": "pass",
+      "pass_rate": 1.0,
+      "tokens_out_avg": 6.0,
+      "assertions": [
+        {
+          "type": "json_valid",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "json_field_equals",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "not_contains",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "max_tokens",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "finish_is",
+          "passed": 1,
+          "failed": 0
+        }
+      ],
+      "failures": []
+    }
+  ]
+}

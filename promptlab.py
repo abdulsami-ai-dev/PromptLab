@@ -2,9 +2,11 @@
 """promptlab - a test runner for prompts."""
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 from assertions import evaluate_assertion
@@ -34,15 +36,23 @@ def call_model(prompt_file, input_arg, temperature, max_tokens):
     return model_result, None
 
 
+def hash_prompt_file(prompt_file):
+    with open(prompt_file, "rb") as f:
+        content = f.read()
+    return hashlib.sha256(content).hexdigest()[:12]
+
+
 def run_case(case, prompt_file, model_cfg, suite_dir, num_runs):
     input_arg = resolve_input(case["input"], suite_dir)
     temperature = model_cfg.get("temperature", 0.0)
     max_tokens = model_cfg.get("max_tokens", 256)
     assertions_list = case.get("assert", [])
 
-    run_outcomes = []       # True/False per run (did the whole case pass that run)
-    assertion_tally = {}    # type -> {"passed": N, "failed": N}
-    all_failures = []       # debug info for any failed assertion, any run
+    run_outcomes = []
+    assertion_tally = {}
+    all_failures = []
+    tokens_out_values = []
+    tokens_in_total = 0
 
     for run_index in range(num_runs):
         model_result, error = call_model(prompt_file, input_arg, temperature, max_tokens)
@@ -51,6 +61,9 @@ def run_case(case, prompt_file, model_cfg, suite_dir, num_runs):
             run_outcomes.append(False)
             all_failures.append({"run": run_index, "type": "model_error", "detail": error})
             continue
+
+        tokens_out_values.append(model_result.get("tokens_out", 0))
+        tokens_in_total += model_result.get("tokens_in", 0)
 
         this_run_passed = True
         for assertion in assertions_list:
@@ -79,13 +92,71 @@ def run_case(case, prompt_file, model_cfg, suite_dir, num_runs):
     else:
         status = "flaky"
 
+    tokens_out_avg = sum(tokens_out_values) / len(tokens_out_values) if tokens_out_values else 0
+
     return {
         "id": case["id"],
         "status": status,
         "pass_rate": pass_rate,
-        "assertion_tally": assertion_tally,
+        "tokens_out_avg": round(tokens_out_avg, 2),
+        "tokens_in_total": tokens_in_total,
+        "assertions": [
+            {"type": a_type, "passed": tally["passed"], "failed": tally["failed"]}
+            for a_type, tally in assertion_tally.items()
+        ],
         "failures": all_failures,
     }
+
+
+def build_report(suite, suite_path, prompt_file, num_runs, case_results, wall_ms):
+    total_cases = len(case_results)
+    passed = sum(1 for c in case_results if c["status"] == "pass")
+    failed = sum(1 for c in case_results if c["status"] == "fail")
+    flaky = sum(1 for c in case_results if c["status"] == "flaky")
+    tokens_in = sum(c["tokens_in_total"] for c in case_results)
+    tokens_out = sum(round(c["tokens_out_avg"] * num_runs) for c in case_results)
+
+    return {
+        "suite": suite.get("name", ""),
+        "prompt_file": suite["prompt_file"],
+        "prompt_hash": hash_prompt_file(prompt_file),
+        "runs": num_runs,
+        "model": suite.get("model", {}),
+        "totals": {
+            "cases": total_cases,
+            "passed": passed,
+            "failed": failed,
+            "flaky": flaky,
+            "tokens_in": tokens_in,
+            "tokens_out": tokens_out,
+            "wall_ms": wall_ms,
+        },
+        "cases": [
+            {
+                "id": c["id"],
+                "status": c["status"],
+                "pass_rate": c["pass_rate"],
+                "tokens_out_avg": c["tokens_out_avg"],
+                "assertions": c["assertions"],
+                "failures": c["failures"],
+            }
+            for c in case_results
+        ],
+    }
+
+
+def print_human_summary(report):
+    t = report["totals"]
+    print(f"\n=== {report['suite']} ===", file=sys.stderr)
+    print(f"cases: {t['cases']}  passed: {t['passed']}  failed: {t['failed']}  flaky: {t['flaky']}", file=sys.stderr)
+    print(f"tokens_in: {t['tokens_in']}  tokens_out: {t['tokens_out']}  wall_ms: {t['wall_ms']}", file=sys.stderr)
+
+    worst = [c for c in report["cases"] if c["status"] != "pass"]
+    worst.sort(key=lambda c: c["pass_rate"])
+    if worst:
+        print("worst offenders:", file=sys.stderr)
+        for c in worst[:5]:
+            print(f"  [{c['status'].upper()}] {c['id']} (pass_rate={c['pass_rate']:.2f})", file=sys.stderr)
 
 
 def cmd_run(args):
@@ -106,19 +177,29 @@ def cmd_run(args):
     model_cfg = suite.get("model", {})
     num_runs = args.runs if args.runs is not None else suite.get("runs", 1)
 
-    any_failed = False
-    for case in suite.get("cases", []):
-        result = run_case(case, prompt_file, model_cfg, suite_dir, num_runs)
+    if not prompt_file.exists():
+        print(f"error: prompt file not found: {prompt_file}", file=sys.stderr)
+        return 1
 
-        if result["status"] != "pass":
-            any_failed = True
+    start_time = time.time()
+    case_results = [
+        run_case(case, prompt_file, model_cfg, suite_dir, num_runs)
+        for case in suite.get("cases", [])
+    ]
+    wall_ms = int((time.time() - start_time) * 1000)
 
-        print(f"[{result['id']}] {result['status'].upper()} (pass_rate={result['pass_rate']:.2f}, runs={num_runs})", file=sys.stderr)
-        for a_type, tally in result["assertion_tally"].items():
-            print(f"    {a_type}: passed={tally['passed']} failed={tally['failed']}", file=sys.stderr)
-        for failure in result["failures"][:3]:
-            print(f"    [run {failure['run']}] {failure['type']}: {failure.get('detail', '')}", file=sys.stderr)
+    report = build_report(suite, suite_path, prompt_file, num_runs, case_results, wall_ms)
 
+    if args.out:
+        with open(args.out, "w", encoding="utf-8") as f:
+            json.dump(report, f, indent=2)
+    else:
+        print(json.dumps(report, indent=2))
+
+    if args.report:
+        print_human_summary(report)
+
+    any_failed = any(c["status"] != "pass" for c in case_results)
     return 2 if any_failed else 0
 
 
