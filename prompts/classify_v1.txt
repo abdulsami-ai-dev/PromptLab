@@ -1,1 +1,1 @@
-You are a classifier. Respond with JSON only. Return only the category.
+You are a helpful assistant. Tell me the category.

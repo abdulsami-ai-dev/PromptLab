@@ -203,9 +203,116 @@ def cmd_run(args):
     return 2 if any_failed else 0
 
 
+def load_report(path, label):
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except OSError:
+        print(f"error: cannot read {label} report: {path}", file=sys.stderr)
+        return None
+    except json.JSONDecodeError as e:
+        print(f"error: {label} report is not valid JSON: {e}", file=sys.stderr)
+        return None
+
+
+def build_comparison(baseline, candidate):
+    warnings = []
+    if baseline.get("prompt_hash") == candidate.get("prompt_hash"):
+        warnings.append("baseline and candidate share the same prompt_hash — comparing a prompt against itself")
+    if baseline.get("suite") != candidate.get("suite"):
+        warnings.append(f"different suites: baseline='{baseline.get('suite')}' candidate='{candidate.get('suite')}'")
+    if baseline.get("model") != candidate.get("model"):
+        warnings.append(f"different model settings: baseline={baseline.get('model')} candidate={candidate.get('model')}")
+
+    baseline_cases = {c["id"]: c for c in baseline.get("cases", [])}
+    candidate_cases = {c["id"]: c for c in candidate.get("cases", [])}
+    all_ids = set(baseline_cases) | set(candidate_cases)
+
+    case_diffs = []
+    for case_id in sorted(all_ids):
+        b = baseline_cases.get(case_id)
+        c = candidate_cases.get(case_id)
+
+        if b and not c:
+            case_diffs.append({"id": case_id, "classification": "removed"})
+            continue
+        if c and not b:
+            case_diffs.append({"id": case_id, "classification": "new"})
+            continue
+
+        b_rate, c_rate = b["pass_rate"], c["pass_rate"]
+        if c_rate > b_rate:
+            classification = "improved"
+        elif c_rate < b_rate:
+            classification = "regressed"
+        else:
+            classification = "unchanged"
+
+        case_diffs.append({
+            "id": case_id,
+            "classification": classification,
+            "baseline_pass_rate": b_rate,
+            "candidate_pass_rate": c_rate,
+        })
+
+    b_totals = baseline.get("totals", {})
+    c_totals = candidate.get("totals", {})
+
+    def pct_change(old, new):
+        return None if old == 0 else round(((new - old) / old) * 100, 2)
+
+    cost_delta = {
+        "tokens_in_baseline": b_totals.get("tokens_in", 0),
+        "tokens_in_candidate": c_totals.get("tokens_in", 0),
+        "tokens_in_pct_change": pct_change(b_totals.get("tokens_in", 0), c_totals.get("tokens_in", 0)),
+        "tokens_out_baseline": b_totals.get("tokens_out", 0),
+        "tokens_out_candidate": c_totals.get("tokens_out", 0),
+        "tokens_out_pct_change": pct_change(b_totals.get("tokens_out", 0), c_totals.get("tokens_out", 0)),
+    }
+
+    return {"warnings": warnings, "cost_delta": cost_delta, "cases": case_diffs}
+
+
+def print_comparison_summary(diff):
+    if diff["warnings"]:
+        print("WARNINGS:", file=sys.stderr)
+        for w in diff["warnings"]:
+            print(f"  - {w}", file=sys.stderr)
+
+    counts = {}
+    for c in diff["cases"]:
+        counts[c["classification"]] = counts.get(c["classification"], 0) + 1
+    print(f"cases: {counts}", file=sys.stderr)
+
+    for c in diff["cases"]:
+        if c["classification"] in ("regressed", "improved"):
+            print(f"  [{c['classification'].upper()}] {c['id']}: {c['baseline_pass_rate']:.2f} -> {c['candidate_pass_rate']:.2f}", file=sys.stderr)
+
+    cd = diff["cost_delta"]
+    print(f"tokens_in: {cd['tokens_in_baseline']} -> {cd['tokens_in_candidate']} ({cd['tokens_in_pct_change']}%)", file=sys.stderr)
+    print(f"tokens_out: {cd['tokens_out_baseline']} -> {cd['tokens_out_candidate']} ({cd['tokens_out_pct_change']}%)", file=sys.stderr)
+
+
 def cmd_compare(args):
-    print(f"[compare] baseline={args.baseline} candidate={args.candidate}", file=sys.stderr)
-    return 0
+    baseline = load_report(args.baseline, "baseline")
+    if baseline is None:
+        return 4
+    candidate = load_report(args.candidate, "candidate")
+    if candidate is None:
+        return 4
+
+    diff = build_comparison(baseline, candidate)
+
+    if args.out:
+        with open(args.out, "w", encoding="utf-8") as f:
+            json.dump(diff, f, indent=2)
+    else:
+        print(json.dumps(diff, indent=2))
+
+    print_comparison_summary(diff)
+
+    has_regression = any(c["classification"] == "regressed" for c in diff["cases"])
+    return 2 if has_regression else 0
 
 
 def cmd_doctor(args):

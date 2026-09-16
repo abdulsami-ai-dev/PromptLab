@@ -1,0 +1,19 @@
+{
+  "warnings": [],
+  "cost_delta": {
+    "tokens_in_baseline": 27,
+    "tokens_in_candidate": 22,
+    "tokens_in_pct_change": -18.52,
+    "tokens_out_baseline": 6,
+    "tokens_out_candidate": 16,
+    "tokens_out_pct_change": 166.67
+  },
+  "cases": [
+    {
+      "id": "c001",
+      "classification": "regressed",
+      "baseline_pass_rate": 1.0,
+      "candidate_pass_rate": 0.0
+    }
+  ]
+}
