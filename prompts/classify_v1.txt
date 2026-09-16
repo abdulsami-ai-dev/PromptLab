@@ -1,1 +1,1 @@
-You are a helpful assistant. Tell me the category.
+You are a helpful assistant. Look at the customer support message and tell me what category it belongs to.

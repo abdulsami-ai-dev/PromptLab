@@ -1,0 +1,61 @@
+{
+  "warnings": [],
+  "cost_delta": {
+    "tokens_in_baseline": 306,
+    "tokens_in_candidate": 754,
+    "tokens_in_pct_change": 146.41,
+    "tokens_out_baseline": 130,
+    "tokens_out_candidate": 50,
+    "tokens_out_pct_change": -61.54
+  },
+  "cases": [
+    {
+      "id": "c001",
+      "classification": "improved",
+      "baseline_pass_rate": 0.0,
+      "candidate_pass_rate": 1.0
+    },
+    {
+      "id": "c002",
+      "classification": "improved",
+      "baseline_pass_rate": 0.0,
+      "candidate_pass_rate": 1.0
+    },
+    {
+      "id": "c003",
+      "classification": "improved",
+      "baseline_pass_rate": 0.0,
+      "candidate_pass_rate": 1.0
+    },
+    {
+      "id": "c004",
+      "classification": "improved",
+      "baseline_pass_rate": 0.0,
+      "candidate_pass_rate": 1.0
+    },
+    {
+      "id": "c005",
+      "classification": "improved",
+      "baseline_pass_rate": 0.0,
+      "candidate_pass_rate": 1.0
+    },
+    {
+      "id": "c006",
+      "classification": "improved",
+      "baseline_pass_rate": 0.0,
+      "candidate_pass_rate": 1.0
+    },
+    {
+      "id": "c007",
+      "classification": "improved",
+      "baseline_pass_rate": 0.0,
+      "candidate_pass_rate": 1.0
+    },
+    {
+      "id": "c008",
+      "classification": "improved",
+      "baseline_pass_rate": 0.0,
+      "candidate_pass_rate": 1.0
+    }
+  ]
+}

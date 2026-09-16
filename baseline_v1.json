@@ -1,0 +1,445 @@
+{
+  "suite": "classify-eval",
+  "prompt_file": "../prompts/classify_v1.txt",
+  "prompt_hash": "1fc6416d5700",
+  "runs": 1,
+  "model": {
+    "temperature": 0.0,
+    "max_tokens": 256
+  },
+  "totals": {
+    "cases": 8,
+    "passed": 0,
+    "failed": 8,
+    "flaky": 0,
+    "tokens_in": 306,
+    "tokens_out": 130,
+    "wall_ms": 1893
+  },
+  "cases": [
+    {
+      "id": "c001",
+      "status": "fail",
+      "pass_rate": 0.0,
+      "tokens_out_avg": 16.0,
+      "assertions": [
+        {
+          "type": "json_valid",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "json_field_equals",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "not_contains",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "max_tokens",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "finish_is",
+          "passed": 1,
+          "failed": 0
+        }
+      ],
+      "failures": [
+        {
+          "run": 0,
+          "type": "json_valid",
+          "detail": "output is not valid JSON: Expecting value: line 1 column 1 (char 0)",
+          "output": "Sure! I think this is a billing issue.\n{\"category\": \"billing\"}"
+        },
+        {
+          "run": 0,
+          "type": "json_field_equals",
+          "detail": "output is not valid JSON: Expecting value: line 1 column 1 (char 0)",
+          "output": "Sure! I think this is a billing issue.\n{\"category\": \"billing\"}"
+        },
+        {
+          "run": 0,
+          "type": "not_contains",
+          "detail": "expected output to NOT contain 'Sure'",
+          "output": "Sure! I think this is a billing issue.\n{\"category\": \"billing\"}"
+        }
+      ]
+    },
+    {
+      "id": "c002",
+      "status": "fail",
+      "pass_rate": 0.0,
+      "tokens_out_avg": 16.0,
+      "assertions": [
+        {
+          "type": "json_valid",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "json_field_equals",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "not_contains",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "max_tokens",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "finish_is",
+          "passed": 1,
+          "failed": 0
+        }
+      ],
+      "failures": [
+        {
+          "run": 0,
+          "type": "json_valid",
+          "detail": "output is not valid JSON: Expecting value: line 1 column 1 (char 0)",
+          "output": "Sure! I think this is a billing issue.\n{\"category\": \"billing\"}"
+        },
+        {
+          "run": 0,
+          "type": "json_field_equals",
+          "detail": "output is not valid JSON: Expecting value: line 1 column 1 (char 0)",
+          "output": "Sure! I think this is a billing issue.\n{\"category\": \"billing\"}"
+        },
+        {
+          "run": 0,
+          "type": "not_contains",
+          "detail": "expected output to NOT contain 'Sure'",
+          "output": "Sure! I think this is a billing issue.\n{\"category\": \"billing\"}"
+        }
+      ]
+    },
+    {
+      "id": "c003",
+      "status": "fail",
+      "pass_rate": 0.0,
+      "tokens_out_avg": 17.0,
+      "assertions": [
+        {
+          "type": "json_valid",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "json_field_equals",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "not_contains",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "max_tokens",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "finish_is",
+          "passed": 1,
+          "failed": 0
+        }
+      ],
+      "failures": [
+        {
+          "run": 0,
+          "type": "json_valid",
+          "detail": "output is not valid JSON: Expecting value: line 1 column 1 (char 0)",
+          "output": "Sure! I think this is a technical issue.\n{\"category\": \"technical\"}"
+        },
+        {
+          "run": 0,
+          "type": "json_field_equals",
+          "detail": "output is not valid JSON: Expecting value: line 1 column 1 (char 0)",
+          "output": "Sure! I think this is a technical issue.\n{\"category\": \"technical\"}"
+        },
+        {
+          "run": 0,
+          "type": "not_contains",
+          "detail": "expected output to NOT contain 'Sure'",
+          "output": "Sure! I think this is a technical issue.\n{\"category\": \"technical\"}"
+        }
+      ]
+    },
+    {
+      "id": "c004",
+      "status": "fail",
+      "pass_rate": 0.0,
+      "tokens_out_avg": 17.0,
+      "assertions": [
+        {
+          "type": "json_valid",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "json_field_equals",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "not_contains",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "max_tokens",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "finish_is",
+          "passed": 1,
+          "failed": 0
+        }
+      ],
+      "failures": [
+        {
+          "run": 0,
+          "type": "json_valid",
+          "detail": "output is not valid JSON: Expecting value: line 1 column 1 (char 0)",
+          "output": "Sure! I think this is a technical issue.\n{\"category\": \"technical\"}"
+        },
+        {
+          "run": 0,
+          "type": "json_field_equals",
+          "detail": "output is not valid JSON: Expecting value: line 1 column 1 (char 0)",
+          "output": "Sure! I think this is a technical issue.\n{\"category\": \"technical\"}"
+        },
+        {
+          "run": 0,
+          "type": "not_contains",
+          "detail": "expected output to NOT contain 'Sure'",
+          "output": "Sure! I think this is a technical issue.\n{\"category\": \"technical\"}"
+        }
+      ]
+    },
+    {
+      "id": "c005",
+      "status": "fail",
+      "pass_rate": 0.0,
+      "tokens_out_avg": 16.0,
+      "assertions": [
+        {
+          "type": "json_valid",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "json_field_equals",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "not_contains",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "max_tokens",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "finish_is",
+          "passed": 1,
+          "failed": 0
+        }
+      ],
+      "failures": [
+        {
+          "run": 0,
+          "type": "json_valid",
+          "detail": "output is not valid JSON: Expecting value: line 1 column 1 (char 0)",
+          "output": "Sure! I think this is a account issue.\n{\"category\": \"account\"}"
+        },
+        {
+          "run": 0,
+          "type": "json_field_equals",
+          "detail": "output is not valid JSON: Expecting value: line 1 column 1 (char 0)",
+          "output": "Sure! I think this is a account issue.\n{\"category\": \"account\"}"
+        },
+        {
+          "run": 0,
+          "type": "not_contains",
+          "detail": "expected output to NOT contain 'Sure'",
+          "output": "Sure! I think this is a account issue.\n{\"category\": \"account\"}"
+        }
+      ]
+    },
+    {
+      "id": "c006",
+      "status": "fail",
+      "pass_rate": 0.0,
+      "tokens_out_avg": 16.0,
+      "assertions": [
+        {
+          "type": "json_valid",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "json_field_equals",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "not_contains",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "max_tokens",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "finish_is",
+          "passed": 1,
+          "failed": 0
+        }
+      ],
+      "failures": [
+        {
+          "run": 0,
+          "type": "json_valid",
+          "detail": "output is not valid JSON: Expecting value: line 1 column 1 (char 0)",
+          "output": "Sure! I think this is a account issue.\n{\"category\": \"account\"}"
+        },
+        {
+          "run": 0,
+          "type": "json_field_equals",
+          "detail": "output is not valid JSON: Expecting value: line 1 column 1 (char 0)",
+          "output": "Sure! I think this is a account issue.\n{\"category\": \"account\"}"
+        },
+        {
+          "run": 0,
+          "type": "not_contains",
+          "detail": "expected output to NOT contain 'Sure'",
+          "output": "Sure! I think this is a account issue.\n{\"category\": \"account\"}"
+        }
+      ]
+    },
+    {
+      "id": "c007",
+      "status": "fail",
+      "pass_rate": 0.0,
+      "tokens_out_avg": 16.0,
+      "assertions": [
+        {
+          "type": "json_valid",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "json_field_equals",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "not_contains",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "max_tokens",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "finish_is",
+          "passed": 1,
+          "failed": 0
+        }
+      ],
+      "failures": [
+        {
+          "run": 0,
+          "type": "json_valid",
+          "detail": "output is not valid JSON: Expecting value: line 1 column 1 (char 0)",
+          "output": "Sure! I think this is a general issue.\n{\"category\": \"general\"}"
+        },
+        {
+          "run": 0,
+          "type": "json_field_equals",
+          "detail": "output is not valid JSON: Expecting value: line 1 column 1 (char 0)",
+          "output": "Sure! I think this is a general issue.\n{\"category\": \"general\"}"
+        },
+        {
+          "run": 0,
+          "type": "not_contains",
+          "detail": "expected output to NOT contain 'Sure'",
+          "output": "Sure! I think this is a general issue.\n{\"category\": \"general\"}"
+        }
+      ]
+    },
+    {
+      "id": "c008",
+      "status": "fail",
+      "pass_rate": 0.0,
+      "tokens_out_avg": 16.0,
+      "assertions": [
+        {
+          "type": "json_valid",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "json_field_equals",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "not_contains",
+          "passed": 0,
+          "failed": 1
+        },
+        {
+          "type": "max_tokens",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "finish_is",
+          "passed": 1,
+          "failed": 0
+        }
+      ],
+      "failures": [
+        {
+          "run": 0,
+          "type": "json_valid",
+          "detail": "output is not valid JSON: Expecting value: line 1 column 1 (char 0)",
+          "output": "Sure! I think this is a general issue.\n{\"category\": \"general\"}"
+        },
+        {
+          "run": 0,
+          "type": "json_field_equals",
+          "detail": "output is not valid JSON: Expecting value: line 1 column 1 (char 0)",
+          "output": "Sure! I think this is a general issue.\n{\"category\": \"general\"}"
+        },
+        {
+          "run": 0,
+          "type": "not_contains",
+          "detail": "expected output to NOT contain 'Sure'",
+          "output": "Sure! I think this is a general issue.\n{\"category\": \"general\"}"
+        }
+      ]
+    }
+  ]
+}
