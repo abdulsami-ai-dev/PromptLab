@@ -1,0 +1,293 @@
+{
+  "suite": "classify-eval",
+  "prompt_file": "../prompts/classify_attempt3.txt",
+  "prompt_hash": "66d3ad2d719e",
+  "runs": 1,
+  "model": {
+    "temperature": 0.0,
+    "max_tokens": 256
+  },
+  "totals": {
+    "cases": 8,
+    "passed": 8,
+    "failed": 0,
+    "flaky": 0,
+    "tokens_in": 290,
+    "tokens_out": 50,
+    "wall_ms": 2130
+  },
+  "cases": [
+    {
+      "id": "c001",
+      "status": "pass",
+      "pass_rate": 1.0,
+      "tokens_out_avg": 6.0,
+      "assertions": [
+        {
+          "type": "json_valid",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "json_field_equals",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "not_contains",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "max_tokens",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "finish_is",
+          "passed": 1,
+          "failed": 0
+        }
+      ],
+      "failures": []
+    },
+    {
+      "id": "c002",
+      "status": "pass",
+      "pass_rate": 1.0,
+      "tokens_out_avg": 6.0,
+      "assertions": [
+        {
+          "type": "json_valid",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "json_field_equals",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "not_contains",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "max_tokens",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "finish_is",
+          "passed": 1,
+          "failed": 0
+        }
+      ],
+      "failures": []
+    },
+    {
+      "id": "c003",
+      "status": "pass",
+      "pass_rate": 1.0,
+      "tokens_out_avg": 7.0,
+      "assertions": [
+        {
+          "type": "json_valid",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "json_field_equals",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "not_contains",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "max_tokens",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "finish_is",
+          "passed": 1,
+          "failed": 0
+        }
+      ],
+      "failures": []
+    },
+    {
+      "id": "c004",
+      "status": "pass",
+      "pass_rate": 1.0,
+      "tokens_out_avg": 7.0,
+      "assertions": [
+        {
+          "type": "json_valid",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "json_field_equals",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "not_contains",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "max_tokens",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "finish_is",
+          "passed": 1,
+          "failed": 0
+        }
+      ],
+      "failures": []
+    },
+    {
+      "id": "c005",
+      "status": "pass",
+      "pass_rate": 1.0,
+      "tokens_out_avg": 6.0,
+      "assertions": [
+        {
+          "type": "json_valid",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "json_field_equals",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "not_contains",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "max_tokens",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "finish_is",
+          "passed": 1,
+          "failed": 0
+        }
+      ],
+      "failures": []
+    },
+    {
+      "id": "c006",
+      "status": "pass",
+      "pass_rate": 1.0,
+      "tokens_out_avg": 6.0,
+      "assertions": [
+        {
+          "type": "json_valid",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "json_field_equals",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "not_contains",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "max_tokens",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "finish_is",
+          "passed": 1,
+          "failed": 0
+        }
+      ],
+      "failures": []
+    },
+    {
+      "id": "c007",
+      "status": "pass",
+      "pass_rate": 1.0,
+      "tokens_out_avg": 6.0,
+      "assertions": [
+        {
+          "type": "json_valid",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "json_field_equals",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "not_contains",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "max_tokens",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "finish_is",
+          "passed": 1,
+          "failed": 0
+        }
+      ],
+      "failures": []
+    },
+    {
+      "id": "c008",
+      "status": "pass",
+      "pass_rate": 1.0,
+      "tokens_out_avg": 6.0,
+      "assertions": [
+        {
+          "type": "json_valid",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "json_field_equals",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "not_contains",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "max_tokens",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "type": "finish_is",
+          "passed": 1,
+          "failed": 0
+        }
+      ],
+      "failures": []
+    }
+  ]
+}
