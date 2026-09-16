@@ -1,0 +1,96 @@
+{
+  "name": "classify-eval",
+  "prompt_file": "../prompts/classify_attempt2.txt",
+  "model": { "temperature": 0.0, "max_tokens": 256 },
+  "runs": 1,
+  "cases": [
+    {
+      "id": "c001",
+      "input": "I was charged twice for invoice 7",
+      "assert": [
+        { "type": "json_valid" },
+        { "type": "json_field_equals", "field": "category", "value": "billing" },
+        { "type": "not_contains", "value": "Sure" },
+        { "type": "max_tokens", "value": 40 },
+        { "type": "finish_is", "value": "stop" }
+      ]
+    },
+    {
+      "id": "c002",
+      "input": "My payment failed but I still got billed",
+      "assert": [
+        { "type": "json_valid" },
+        { "type": "json_field_equals", "field": "category", "value": "billing" },
+        { "type": "not_contains", "value": "Sure" },
+        { "type": "max_tokens", "value": 40 },
+        { "type": "finish_is", "value": "stop" }
+      ]
+    },
+    {
+      "id": "c003",
+      "input": "The app keeps crashing when I open settings",
+      "assert": [
+        { "type": "json_valid" },
+        { "type": "json_field_equals", "field": "category", "value": "technical" },
+        { "type": "not_contains", "value": "Sure" },
+        { "type": "max_tokens", "value": 40 },
+        { "type": "finish_is", "value": "stop" }
+      ]
+    },
+    {
+      "id": "c004",
+      "input": "I'm getting an error every time I try to upload a file",
+      "assert": [
+        { "type": "json_valid" },
+        { "type": "json_field_equals", "field": "category", "value": "technical" },
+        { "type": "not_contains", "value": "Sure" },
+        { "type": "max_tokens", "value": 40 },
+        { "type": "finish_is", "value": "stop" }
+      ]
+    },
+    {
+      "id": "c005",
+      "input": "I forgot my password and can't log into my account",
+      "assert": [
+        { "type": "json_valid" },
+        { "type": "json_field_equals", "field": "category", "value": "account" },
+        { "type": "not_contains", "value": "Sure" },
+        { "type": "max_tokens", "value": 40 },
+        { "type": "finish_is", "value": "stop" }
+      ]
+    },
+    {
+      "id": "c006",
+      "input": "Please cancel my account, I no longer need the service",
+      "assert": [
+        { "type": "json_valid" },
+        { "type": "json_field_equals", "field": "category", "value": "account" },
+        { "type": "not_contains", "value": "Sure" },
+        { "type": "max_tokens", "value": 40 },
+        { "type": "finish_is", "value": "stop" }
+      ]
+    },
+    {
+      "id": "c007",
+      "input": "What are your business hours on weekends?",
+      "assert": [
+        { "type": "json_valid" },
+        { "type": "json_field_equals", "field": "category", "value": "general" },
+        { "type": "not_contains", "value": "Sure" },
+        { "type": "max_tokens", "value": 40 },
+        { "type": "finish_is", "value": "stop" }
+      ]
+    },
+    {
+      "id": "c008",
+      "input": "Do you offer a student discount?",
+      "assert": [
+        { "type": "json_valid" },
+        { "type": "json_field_equals", "field": "category", "value": "general" },
+        { "type": "not_contains", "value": "Sure" },
+        { "type": "max_tokens", "value": 40 },
+        { "type": "finish_is", "value": "stop" }
+      ]
+    }
+  ]
+}

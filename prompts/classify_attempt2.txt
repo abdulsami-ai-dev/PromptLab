@@ -1,0 +1,1 @@
+You are a helpful assistant. Look at the customer message and return its category as JSON.
