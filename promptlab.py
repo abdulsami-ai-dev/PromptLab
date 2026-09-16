@@ -316,8 +316,53 @@ def cmd_compare(args):
 
 
 def cmd_doctor(args):
-    print("[doctor] checking environment...", file=sys.stderr)
-    return 0
+    ok = True
+    print("promptlab doctor", file=sys.stderr)
+
+    print(f"Python version: {sys.version.split()[0]}", file=sys.stderr)
+    if sys.version_info < (3, 10):
+        print("  WARNING: Python 3.10+ required", file=sys.stderr)
+        ok = False
+    else:
+        print("  OK", file=sys.stderr)
+
+    model_path = Path("stubmodel.py")
+    if not model_path.exists():
+        print(f"Model binary: NOT FOUND at {model_path}", file=sys.stderr)
+        ok = False
+    else:
+        try:
+            result = subprocess.run(
+                [sys.executable, str(model_path), "--prompt", "SPEC.md", "--input", "doctor check"],
+                capture_output=True, text=True, timeout=10
+            )
+            if result.returncode == 0:
+                print("Model binary: reachable and responding", file=sys.stderr)
+            else:
+                print(f"Model binary: responded with exit code {result.returncode}", file=sys.stderr)
+                ok = False
+        except Exception as e:
+            print(f"Model binary: failed to invoke ({e})", file=sys.stderr)
+            ok = False
+
+    suites_dir = Path("suites")
+    if suites_dir.exists():
+        suite_files = list(suites_dir.glob("*.json"))
+        print(f"Suites discoverable: {len(suite_files)} found in {suites_dir}/", file=sys.stderr)
+        for sf in suite_files:
+            print(f"  - {sf}", file=sys.stderr)
+    else:
+        print(f"Suites: directory {suites_dir}/ not found", file=sys.stderr)
+        ok = False
+
+    known_assertions = ["contains", "not_contains", "equals", "matches",
+                         "json_valid", "json_field_equals", "max_tokens", "finish_is"]
+    print(f"Assertion types registered: {len(known_assertions)}", file=sys.stderr)
+    for a in known_assertions:
+        print(f"  - {a}", file=sys.stderr)
+
+    print("doctor: " + ("ALL OK" if ok else "ISSUES FOUND"), file=sys.stderr)
+    return 0 if ok else 1
 
 
 def build_parser():
