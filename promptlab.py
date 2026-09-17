@@ -201,8 +201,8 @@ def build_report(suite, suite_path, prompt_file, num_runs, case_results, wall_ms
             "flaky": flaky,
             "tokens_in": tokens_in,
             "tokens_out": tokens_out,
-            "wall_ms": wall_ms,
         },
+        "timing": {"wall_ms": wall_ms},
         "cases": [
             {
                 "id": c["id"],
@@ -221,7 +221,7 @@ def print_human_summary(report):
     t = report["totals"]
     print(f"\n=== {report['suite']} ===", file=sys.stderr)
     print(f"cases: {t['cases']}  passed: {t['passed']}  failed: {t['failed']}  flaky: {t['flaky']}", file=sys.stderr)
-    print(f"tokens_in: {t['tokens_in']}  tokens_out: {t['tokens_out']}  wall_ms: {t['wall_ms']}", file=sys.stderr)
+    print(f"tokens_in: {t['tokens_in']}  tokens_out: {t['tokens_out']}  wall_ms: {report['timing']['wall_ms']}", file=sys.stderr)
 
     worst = [c for c in report["cases"] if c["status"] != "pass"]
     worst.sort(key=lambda c: c["pass_rate"])
