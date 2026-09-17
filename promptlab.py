@@ -42,6 +42,78 @@ def hash_prompt_file(prompt_file):
     return hashlib.sha256(content).hexdigest()[:12]
 
 
+VALID_ASSERTION_TYPES = {
+    "contains": ["value"],
+    "not_contains": ["value"],
+    "equals": ["value"],
+    "matches": ["pattern"],
+    "json_valid": [],
+    "json_field_equals": ["field", "value"],
+    "max_tokens": ["value"],
+    "finish_is": ["value"],
+}
+
+
+def validate_suite(suite):
+    """Returns None if the suite is valid, or a readable error string."""
+    if not isinstance(suite, dict):
+        return "suite must be a JSON object"
+
+    if "prompt_file" not in suite:
+        return "missing required field: prompt_file"
+    if not isinstance(suite["prompt_file"], str):
+        return "prompt_file must be a string"
+
+    if "cases" not in suite:
+        return "missing required field: cases"
+    if not isinstance(suite["cases"], list):
+        return "cases must be a list"
+
+    if "model" in suite and not isinstance(suite["model"], dict):
+        return "model must be an object"
+
+    if "runs" in suite and not isinstance(suite["runs"], int):
+        return "runs must be an integer"
+
+    seen_ids = set()
+    for i, case in enumerate(suite["cases"]):
+        if not isinstance(case, dict):
+            return f"case at index {i} must be an object"
+
+        if "id" not in case:
+            return f"case at index {i} missing required field: id"
+        case_id = case["id"]
+        if case_id in seen_ids:
+            return f"duplicate case id: {case_id}"
+        seen_ids.add(case_id)
+
+        if "input" not in case:
+            return f"case '{case_id}' missing required field: input"
+        input_val = case["input"]
+        if not isinstance(input_val, (str, dict)):
+            return f"case '{case_id}': input must be a string or a {{'file': ...}} object"
+        if isinstance(input_val, dict) and "file" not in input_val:
+            return f"case '{case_id}': input object must contain a 'file' field"
+
+        assertions_list = case.get("assert", [])
+        if not isinstance(assertions_list, list):
+            return f"case '{case_id}': assert must be a list"
+
+        for j, a in enumerate(assertions_list):
+            if not isinstance(a, dict):
+                return f"case '{case_id}', assertion {j}: must be an object"
+            if "type" not in a:
+                return f"case '{case_id}', assertion {j}: missing 'type'"
+            a_type = a["type"]
+            if a_type not in VALID_ASSERTION_TYPES:
+                return f"case '{case_id}': unknown assertion type '{a_type}'"
+            for required_field in VALID_ASSERTION_TYPES[a_type]:
+                if required_field not in a:
+                    return f"case '{case_id}': assertion '{a_type}' missing required field '{required_field}'"
+
+    return None
+
+
 def run_case(case, prompt_file, model_cfg, suite_dir, num_runs):
     input_arg = resolve_input(case["input"], suite_dir)
     temperature = model_cfg.get("temperature", 0.0)
@@ -170,6 +242,11 @@ def cmd_run(args):
         return 4
     except json.JSONDecodeError as e:
         print(f"error: suite file is not valid JSON: {e}", file=sys.stderr)
+        return 1
+
+    validation_error = validate_suite(suite)
+    if validation_error:
+        print(f"error: malformed suite: {validation_error}", file=sys.stderr)
         return 1
 
     suite_dir = suite_path.parent

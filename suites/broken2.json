@@ -1,0 +1,7 @@
+{
+  "name": "broken-suite-2",
+  "prompt_file": "../prompts/classify_v1.txt",
+  "cases": [
+    { "id": "c001", "input": "test", "assert": [{ "type": "made_up_type" }] }
+  ]
+}
