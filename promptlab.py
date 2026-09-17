@@ -11,6 +11,8 @@ from pathlib import Path
 
 from assertions import evaluate_assertion
 
+class ModelInvocationError(Exception):
+    pass
 
 def resolve_input(input_value, suite_dir):
     if isinstance(input_value, dict):
@@ -26,14 +28,20 @@ def call_model(prompt_file, input_arg, temperature, max_tokens):
         "--temperature", str(temperature),
         "--max-tokens", str(max_tokens),
     ]
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.SubprocessError) as e:
+        return None, f"model could not be invoked: {e}", True
+
     if result.returncode != 0:
-        return None, result.stderr.strip()
+        return None, result.stderr.strip(), False
+
     try:
         model_result = json.loads(result.stdout.strip())
     except json.JSONDecodeError as e:
-        return None, f"model output was not valid JSON: {e}"
-    return model_result, None
+        return None, f"model output was not valid JSON: {e}", False
+
+    return model_result, None, False
 
 
 def hash_prompt_file(prompt_file):
@@ -127,8 +135,10 @@ def run_case(case, prompt_file, model_cfg, suite_dir, num_runs):
     tokens_in_total = 0
 
     for run_index in range(num_runs):
-        model_result, error = call_model(prompt_file, input_arg, temperature, max_tokens)
+        model_result, error, invocation_failed = call_model(prompt_file, input_arg, temperature, max_tokens)
 
+        if invocation_failed:
+            raise ModelInvocationError(error)
         if error:
             run_outcomes.append(False)
             all_failures.append({"run": run_index, "type": "model_error", "detail": error})
@@ -258,11 +268,21 @@ def cmd_run(args):
         print(f"error: prompt file not found: {prompt_file}", file=sys.stderr)
         return 1
 
+    
+    model_path = Path("stubmodel.py")
+    if not model_path.exists():
+        print(f"error: model binary not found: {model_path}", file=sys.stderr)
+        return 3
+
     start_time = time.time()
-    case_results = [
-        run_case(case, prompt_file, model_cfg, suite_dir, num_runs)
-        for case in suite.get("cases", [])
-    ]
+    try:
+        case_results = [
+            run_case(case, prompt_file, model_cfg, suite_dir, num_runs)
+            for case in suite.get("cases", [])
+        ]
+    except ModelInvocationError as e:
+        print(f"error: {e}", file=sys.stderr)
+        return 3
     wall_ms = int((time.time() - start_time) * 1000)
 
     report = build_report(suite, suite_path, prompt_file, num_runs, case_results, wall_ms)
